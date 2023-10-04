@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "coaching",
+    "password": "coaching",
+    "database": "coaching",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+  "test": {
+    "username": "coaching",
+    "password": "coaching",
+    "database": "coaching",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "coaching",
+    "password": "coaching",
+    "database": "coaching",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  }
+}
