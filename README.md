@@ -15,5 +15,8 @@ This project is for tutors who work independently, helps manage students, their 
 * run 'npm install'
 * run 'npm run build'
 * go inside the server directory
+* rename '.env.example' to '.env'
+* modify the '.env' file as required
+* create your database manually
+* run 'npx sequelize-cli db:migrate'
 * run 'node app.js'
-
