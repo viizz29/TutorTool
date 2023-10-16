@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useEffect } from 'react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 
@@ -7,25 +7,28 @@ import Typography from '@mui/material/Typography';
 import axios from 'axios';
  
 export default function AddStudent() {
-  const tkn = localStorage.getItem('token');
+  const [batch, setBatch] = React.useState({});
+  
   const handleSubmit = (event) => {
     event.preventDefault();
+    const token = localStorage.getItem('token');
+    const batch_id = (new URLSearchParams(window.location.search)).get('batchid');
+
     const data = new FormData(event.currentTarget);
-
-    const params = new URLSearchParams(window.location.search);
-    const batch_id = params.get('batchid');
-
+    
     axios.post('/api/add-student', {
       batchid: batch_id,
       name: data.get('name'),
       school: data.get('school'),
       standard: data.get('standard'),
+      phone: data.get('phone'),
+      email: data.get('email'),
       fee: data.get('fee'),
       admission_date: data.get('admission_date')
     }, {
       headers: {
         'Content-Type': 'application/json',
-        'x-access-token': tkn,
+        'x-access-token': token,
       }
     })
     .then(function (response) {
@@ -37,6 +40,41 @@ export default function AddStudent() {
     });
   };
 
+
+  const loadBatchDetails = () => {
+    const token = localStorage.getItem('token');
+    const batch_id = (new URLSearchParams(window.location.search)).get('batchid');
+
+      fetch("/api/batch?id="+ batch_id, {
+        method: 'GET',
+        headers: {
+          'x-access-token': token,
+        },
+      })
+        .then(res => res.json())
+        .then(
+          (result) => {
+            console.log(result);
+            setBatch(result);
+          },
+        
+          (error) => {
+            this.setState({
+              isLoaded: true,
+              error
+            });
+          }
+        );
+    }
+  
+
+  useEffect(() => {
+    loadBatchDetails();
+    return () => {};
+  }, []);
+  
+
+
   return (
         <Box
           sx={{
@@ -47,7 +85,7 @@ export default function AddStudent() {
           }}
         >
           <Typography component="h1" variant="h5">
-            Add Student
+            Add Student to {batch.title}
           </Typography>
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
             <TextField
@@ -77,6 +115,24 @@ export default function AddStudent() {
               label="standard"
               id="standard"
               autoComplete="standard"
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="phone"
+              label="phone"
+              id="phone"
+              type="number"
+              autoComplete="phone"
+            />
+            <TextField
+              margin="normal"
+              fullWidth
+              name="email"
+              label="Email Address"
+              id="email"
+              autoComplete="email"
             />
             <TextField
               margin="normal"

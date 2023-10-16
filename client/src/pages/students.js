@@ -17,12 +17,39 @@ class Students extends React.Component {
       this.state = {
         error: null,
         isLoaded: false,
+        batch: {},
         students: []
       };
       this.tkn = localStorage.getItem('token');
     }
   
-    componentDidMount() {
+    loadBatchDetails(){
+      fetch("/api/batch?id="+this.batch_id, {
+        method: 'GET',
+        headers: {
+          'x-access-token': this.tkn,
+        },
+      })
+        .then(res => res.json())
+        .then(
+          (result) => {
+            console.log(result);
+            this.setState({
+              isLoaded: true,
+              batch: result
+            });
+          },
+         
+          (error) => {
+            this.setState({
+              isLoaded: true,
+              error
+            });
+          }
+        );
+    }
+
+    loadStudents(){
       fetch("/api/students?batchid="+this.batch_id, {
         method: 'GET',
         headers: {
@@ -47,11 +74,16 @@ class Students extends React.Component {
               error
             });
           }
-        )
+        );
+    }
+
+    componentDidMount() {
+      this.loadBatchDetails();
+      this.loadStudents();
     }
   
     render() {
-      const { error, isLoaded, students } = this.state;
+      const { error, isLoaded, batch, students } = this.state;
       if (error) {
         return <div>Error: {error.message}</div>;
       } else if (!isLoaded) {
@@ -68,7 +100,7 @@ class Students extends React.Component {
               >
 
               <Typography component="h1" variant="h3">
-                  STUDENTS
+                  STUDENTS of {batch.title}
                 </Typography>
                 
                 {students.map(student => (

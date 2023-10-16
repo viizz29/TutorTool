@@ -25,7 +25,11 @@ async function post(req, res){
     const User = db.User;
 
     // Validate if user exist in our database
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ 
+      where:{
+        email: email 
+      }
+    });
     if (user && (await bcrypt.compare(password, user.password))) {
       // Create token
       const token = jwt.sign(
